@@ -1,8 +1,6 @@
 module.exports = {
     pusherConnection: {
-        appId: process.env.APPID,
-        key: process.env.KEY,
-        secret: process.env.SECRET,
-        cluster: process.env.CLUSTER
+        key: process.env.REACT_APP_KEY,
+        cluster: process.env.REACT_APP_CLUSTER
       }
 }
