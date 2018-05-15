@@ -49,7 +49,8 @@ module.exports = function(app) {
     app.post('/send-message', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'message_sent', {
             username: req.body.username,
-            message: req.body.message
+            message: req.body.message,
+            timeStamp: req.body.timeStamp
         });
         res.send('Message sent');
     });

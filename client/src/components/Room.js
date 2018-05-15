@@ -55,7 +55,7 @@ class Room extends Component {
         // Logic for when a new member is added to the chat
         channel.bind('pusher:member_added', (member) => {
             // Updates chats for everyone and welcomes new players
-            this.setState({ chats: [...this.state.chats, { username: 'Admin', message: `${member.id} has joined the chat.`} ] });
+            this.setState({ chats: [...this.state.chats, { username: 'Admin', message: `${member.id} has joined the chat.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ] });
         });
         // Logic for sending messages and updating the chat.
         channel.bind('message_sent', data => {

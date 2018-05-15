@@ -16,7 +16,8 @@ class Chat extends Component {
         if (e.keyCode === 13) {
             const payload = {
                 username: this.props.username,
-                message: this.state.text
+                message: this.state.text,
+                timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })
             };
             axios.post('/send-message', payload);
             this.setState({ text: '' });
