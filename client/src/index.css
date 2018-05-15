@@ -46,6 +46,32 @@ body {
   text-align: center;
 }
 
+.player-out {
+  position: relative;
+  overflow: hidden;
+}
+
+.player-out:before, .player-out:after {
+  position: absolute;
+  content: '';
+  background: red;
+  display: block;
+  width: 100%;
+  height: 10px;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.player-out:after {
+  -webkit-transform: rotate(45deg);  
+  transform: rotate(45deg);
+}
+
 .interactions-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

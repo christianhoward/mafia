@@ -44,7 +44,8 @@ class Room extends Component {
                 players.push({ 
                     username: member,
                     vote: '',
-                    voted: false
+                    voted: false,
+                    eliminated: false
                  });
             });
             // Updates the player list for all players
@@ -66,16 +67,21 @@ class Room extends Component {
             this.setState({ players: data, count: data.length });
         });
         channel.bind('ready_up', data => {
-            console.log('ready', data);
             let newState = this.state.players;
             newState.filter(player => (player.username === data.username)).map(player => {
                 player.vote = data.vote;
                 player.voted = data.voted;
             });
-            console.log(newState);
             this.setState({ players: newState });
         });
-        setTimeout(() => { this.setState({ loading: false }) }, 4000);
+        channel.bind('elimination', data => {
+            let newState = this.state.players;
+            newState.filter(player => (player.username === data.username)).map(player => {
+                player.eliminated = true;
+            });
+            this.setState({ players: newState, chats: [...this.state.chats, { username: 'Admin', message: `${data.username} has been eliminated.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ] });
+        });
+        // setTimeout(() => { this.setState({ loading: false }) }, 4000);
     }
     updatePlayerList(players) {
         axios.post('/update-player-list', players);
@@ -96,7 +102,7 @@ class Room extends Component {
             return (
                 <div>
                     <div className="players-grid">
-                        <PlayersPanel players={this.state.players} />
+                        <PlayersPanel username={this.props.username} players={this.state.players} />
                     </div>
                     <div className="interactions-grid">
                         <Chat {...this.props} {...this.state} />

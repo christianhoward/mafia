@@ -17,6 +17,9 @@
     },
     "/ready-up": {
       "target": "http://localhost:5000"
+    },
+    "/elimination": {
+      "target": "http://localhost:5000"
     }
   },
   "dependencies": {
