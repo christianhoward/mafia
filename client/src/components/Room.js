@@ -28,6 +28,7 @@ class Room extends Component {
             this.props.history.push('/');
         }
         // Connect to Pusher Instance
+        console.log(pusherConnection);
         const pusher = new Pusher(pusherConnection.key, {
             cluster: pusherConnection.cluster,
             encrypted: true,
