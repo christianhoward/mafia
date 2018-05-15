@@ -13,10 +13,10 @@ class Chat extends Component {
         this.handleTextChange = this.handleTextChange.bind(this);
     }
     handleTextChange(e) {
-        if (e.keyCode === 13) {
+        if (e.keyCode === 13 && this.state.text.trim() !== '') {
             const payload = {
                 username: this.props.username,
-                message: this.state.text,
+                message: this.state.text.trim(),
                 timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })
             };
             axios.post('/send-message', payload);
