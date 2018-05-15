@@ -7,6 +7,8 @@ import Chat from './ChatPanel';
 import Actions from './ActionsPanel';
 import PlayersPanel from './PlayersPanel';
 
+import { pusherConnection } from './config/keys';
+
 class Room extends Component {
     constructor(props) {
         super(props);
@@ -26,8 +28,8 @@ class Room extends Component {
             this.props.history.push('/');
         }
         // Connect to Pusher Instance
-        const pusher = new Pusher('09c0640396b0a6798f30', {
-            cluster: 'mt1',
+        const pusher = new Pusher(pusherConnection.key, {
+            cluster: pusherConnection.cluster,
             encrypted: true,
             authEndpoint: 'pusher/auth'
         });
