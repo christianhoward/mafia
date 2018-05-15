@@ -10,7 +10,7 @@ class ChatList extends React.Component {
             <div className="chat-list" id="chat-list">
                 {this.props.chats.map(chat => {
                     return (
-                        <div className="chat--messages">
+                        <div className="chat--messages" key={`${chat.username}--${chat.timeStamp}`}>
                             <div><strong style={ chat.username === 'Admin' ? {color: 'red'} : {color: 'black'} }>{chat.username}</strong> <small style={{ color: 'grey' }}>{chat.timeStamp.substr(chat.timeStamp.length-8)}</small></div>
                             <div>{chat.message}</div>
                         </div>
