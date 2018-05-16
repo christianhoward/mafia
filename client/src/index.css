@@ -49,6 +49,7 @@ body {
 .player-out {
   position: relative;
   overflow: hidden;
+  height: 125px;
 }
 
 .player-out:before, .player-out:after {
@@ -56,11 +57,11 @@ body {
   content: '';
   background: red;
   display: block;
-  width: 100%;
+  width: 177px;
   height: 10px;
   -webkit-transform: rotate(-45deg);
   transform: rotate(-45deg);
-  left: 0;
+  left: -26px;
   right: 0;
   top: 0;
   bottom: 0;
