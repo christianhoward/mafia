@@ -27,6 +27,9 @@ class Room extends Component {
         if (!this.props.username) {
             this.props.history.push('/');
         }
+        if (this.state.count > 3) {
+            alert('Too many players!');
+        }
         // Connect to Pusher Instance
         const pusher = new Pusher(pusherConnection.key, {
             cluster: pusherConnection.cluster,
@@ -81,8 +84,35 @@ class Room extends Component {
             });
             this.setState({ players: newState, chats: [...this.state.chats, { username: 'Admin', message: `${data.username} has been eliminated.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ] });
         });
+        channel.bind('assign_roles', data => {
+            // Get correct number of roles for game
+            let roles = [];
+            if (this.state.players.length > 7) {
+                roles.push('Mafia', 'Mafia', 'Mafia', 'Doctor', 'Detective')
+            } else {
+                roles.push('Mafia', 'Mafia', 'Doctor', 'Detective')
+            }
+            roles = roles.concat(Array(...Array(this.state.players.length-roles.length)).map(() => 'Villager'));
+            // Assign role to each player
+            let newState = this.state.players;
+            newState.map(player => {
+                let counter = Math.floor(Math.random() * roles.length);
+                player.role = roles[counter];
+                roles.splice(counter, 1);
+            });
+            // Update State
+            this.setState({ players: newState });
+        });
+        channel.bind('pusher:member_removed', (member) => {
+            let newState = this.state.players;
+            newState.filter(player => (player.username === member.id)).map(player => {
+                player.eliminated = true;
+            });
+            this.setState({ chats: [...this.state.chats, { username: 'Admin', message: `${member.id} has left the game.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ], players: newState });
+        });
         // setTimeout(() => { this.setState({ loading: false }) }, 4000);
     }
+    
     updatePlayerList(players) {
         axios.post('/update-player-list', players);
     }

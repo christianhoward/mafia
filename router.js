@@ -69,10 +69,16 @@ module.exports = function(app) {
         res.send('vote cast');
     });
 
+    app.post('/assign-roles', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'assign_roles', req.body);
+        res.send('roles assigned');
+    });
+
     app.post('/elimination', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'elimination', {
             username: req.body.username
         });
         res.send(`${req.body.username} eliminated`);
     });
+
 }

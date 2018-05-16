@@ -18,6 +18,9 @@ class ActionsPanel extends Component {
         };
         axios.post('/elimination', payload);
     }
+    assignRoles() {
+        axios.post('/assign-roles', []);
+    }
     render() {
         if (!this.props.player) {
             return null
@@ -37,6 +40,10 @@ class ActionsPanel extends Component {
                             submitVote={this.submitVote.bind(this)} 
                             player={this.props.player} 
                         />
+                    </div>
+                    <div>
+                        <div>Assign Roles Test</div>
+                        <button onClick={this.assignRoles.bind(this)}>Assign Roles</button>
                     </div>
                     <div>
                         <div>Elimination Test</div>
