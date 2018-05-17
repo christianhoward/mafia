@@ -4,6 +4,30 @@ body {
   font-family: sans-serif;
 }
 
+button {
+  background-color: black;
+  width: 100px;
+  height: 40px;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+button:hover, button:active {
+  background: white;
+  border: 2px solid black;
+  color: black;
+}
+
+button:disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
 .header {
   background-color: #000000;
   height: 60px;
@@ -115,7 +139,7 @@ body {
 
 .chat-bar__input {
   width: 100%;
-  height: 36px;
+  height: 40px;
   font-size: 20px;
   border: none;
   padding: 10px;
@@ -124,4 +148,18 @@ body {
 
 .actions {
   border: 1px solid black;
+}
+
+.clock {
+  text-align: center;
+  background-color: darkgrey;
+  border: 2px solid grey;
+  width: 100px;
+  margin: auto;
+}
+
+.clock-text {
+  color: white;
+  font-size: 2.25rem;
+  font-weight: 300;
 }

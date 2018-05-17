@@ -1,7 +1,7 @@
 import React from "react";
 
-const Button = ({ player, value, submitVote }) => (
-  <button value={value} disabled={player.voted} onClick={submitVote}>{value}</button>
+const Button = ({ disabled, value, onClick }) => (
+        <button value={value} disabled={!disabled ? false : disabled} onClick={onClick}>{value}</button>
 );
 
 export default Button;
