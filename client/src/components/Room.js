@@ -18,7 +18,9 @@ class Room extends Component {
           chats: [],
           players: [],
           count: 0,
-          loading: true
+          loading: true,
+          time: '',
+          chatLocked: false
         };
         this.updatePlayerList = this.updatePlayerList.bind(this);
     }
@@ -103,6 +105,9 @@ class Room extends Component {
             // Update State
             this.setState({ players: newState });
         });
+        channel.bind('set_timer', data => {
+            this.setState({ time: data.time });
+        });
         channel.bind('pusher:member_removed', (member) => {
             let newState = this.state.players;
             newState.filter(player => (player.username === member.id)).map(player => {
@@ -137,7 +142,8 @@ class Room extends Component {
                     <div className="interactions-grid">
                         <Chat {...this.props} {...this.state} />
                         <Actions 
-                            player={this.state.players.find(player => player.username === this.props.username)} 
+                            player={this.state.players.find(player => player.username === this.props.username)}
+                            time={this.state.time} 
                         />
                     </div>
                 </div>

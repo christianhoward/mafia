@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import Button from './ActionsComponents/Button';
+import Timer from './ActionsComponents/Timer';
 
 class ActionsPanel extends Component {
     submitVote(e) {
@@ -32,13 +33,13 @@ class ActionsPanel extends Component {
                         <div>General Yes/No Voting Test</div>
                         <Button 
                             value={'Yes'} 
-                            submitVote={this.submitVote.bind(this)} 
-                            player={this.props.player} 
+                            onClick={this.submitVote.bind(this)} 
+                            disabled={this.props.player.voted} 
                         />
                         <Button 
                             value={'No'} 
-                            submitVote={this.submitVote.bind(this)} 
-                            player={this.props.player} 
+                            onClick={this.submitVote.bind(this)} 
+                            disabled={this.props.player.voted} 
                         />
                     </div>
                     <div>
@@ -48,6 +49,10 @@ class ActionsPanel extends Component {
                     <div>
                         <div>Elimination Test</div>
                         <button onClick={this.handleElimination.bind(this)}>Eliminate Myself</button>
+                    </div>
+                    <div>
+                        <div>Timer Test</div>
+                        <Timer time={this.props.time} countdownStart={5}/>
                     </div>
                 </div>
             );

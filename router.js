@@ -74,6 +74,11 @@ module.exports = function(app) {
         res.send('roles assigned');
     });
 
+    app.post('/set-timer', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'set_timer', req.body);
+        res.send('timer set');
+    });
+
     app.post('/elimination', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'elimination', {
             username: req.body.username

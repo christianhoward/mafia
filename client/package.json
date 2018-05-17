@@ -21,6 +21,9 @@
     "/assign-roles": {
       "target": "http://localhost:5000"
     },
+    "/set-timer": {
+      "target": "http://localhost:5000"
+    },
     "/elimination": {
       "target": "http://localhost:5000"
     }
