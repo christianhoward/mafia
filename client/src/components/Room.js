@@ -114,6 +114,9 @@ class Room extends Component {
         channel.bind('doctor_saved', data => {
             this.setState({ doctorSaved: data.saved });
         });
+        channel.bind('detective_investigated', data => {
+            this.setState({ detectiveInvestigated: [...this.state.detectiveInvestigated, data.investigated] });
+        });
         channel.bind('pusher:member_removed', (member) => {
             let newState = this.state.players;
             newState.filter(player => (player.username === member.id)).map(player => {

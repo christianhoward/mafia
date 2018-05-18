@@ -27,6 +27,9 @@
     "/doctor-saved": {
       "target": "http://localhost:5000"
     },
+    "/detective-investigated": {
+      "target": "http://localhost:5000"
+    },
     "/elimination": {
       "target": "http://localhost:5000"
     }

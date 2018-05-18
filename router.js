@@ -82,7 +82,12 @@ module.exports = function(app) {
     app.post('/doctor-saved', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'doctor_saved', req.body);
         res.send(`Doctor Saved ${req.body.saved}`);
-    })
+    });
+
+    app.post('/detective-investigated', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'detective_investigated', req.body);
+        res.send(`Detective investigated ${req.body.investigated}`);
+    });
 
     app.post('/elimination', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'elimination', {

@@ -4,6 +4,7 @@ import axios from 'axios';
 import Button from './ActionsComponents/Button';
 import Timer from './ActionsComponents/Timer';
 import DoctorVote from './ActionsComponents/DoctorVote';
+import DetectiveVote from './ActionsComponents/DetectiveVote';
 
 class ActionsPanel extends Component {
     submitVote(e) {
@@ -12,6 +13,11 @@ class ActionsPanel extends Component {
                 saved: e.target.innerHTML.substr(5)
             }
             axios.post('/doctor-saved', payload);
+        } else if (e.target.getAttribute('data-use') === 'Detective') {
+            const payload = {
+                investigated: e.target.value
+            }
+            axios.post('/detective-investigated', payload);
         } else {
             const payload = {
                 username: this.props.player.username,
@@ -70,6 +76,14 @@ class ActionsPanel extends Component {
                             players={this.props.players} 
                             submitVote={this.submitVote.bind(this)}
                             doctorSaved={this.props.doctorSaved}
+                        />
+                    </div>
+                    <div>
+                        <div>Detective Investigated</div>
+                        <DetectiveVote 
+                            players={this.props.players} 
+                            submitVote={this.submitVote.bind(this)}
+                            detectiveInvestigated={this.props.detectiveInvestigated}
                         />
                     </div>
                 </div>
