@@ -15,13 +15,16 @@
     "/update-player-list": {
       "target": "http://localhost:5000"
     },
-    "/ready-up": {
+    "/public-vote": {
       "target": "http://localhost:5000"
     },
     "/assign-roles": {
       "target": "http://localhost:5000"
     },
     "/set-timer": {
+      "target": "http://localhost:5000"
+    },
+    "/doctor-saved": {
       "target": "http://localhost:5000"
     },
     "/elimination": {

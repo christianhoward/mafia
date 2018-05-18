@@ -20,7 +20,10 @@ class Room extends Component {
           count: 0,
           loading: true,
           time: '',
-          chatLocked: false
+          chatLocked: false,
+          doctorSaved: '',
+          detectiveInvestigated: [],
+          mafiaVote: []
         };
         this.updatePlayerList = this.updatePlayerList.bind(this);
     }
@@ -71,7 +74,7 @@ class Room extends Component {
         channel.bind('update_player_list', data => {
             this.setState({ players: data, count: data.length });
         });
-        channel.bind('ready_up', data => {
+        channel.bind('public_vote', data => {
             let newState = this.state.players;
             newState.filter(player => (player.username === data.username)).map(player => {
                 player.vote = data.vote;
@@ -108,6 +111,9 @@ class Room extends Component {
         channel.bind('set_timer', data => {
             this.setState({ time: data.time });
         });
+        channel.bind('doctor_saved', data => {
+            this.setState({ doctorSaved: data.saved });
+        });
         channel.bind('pusher:member_removed', (member) => {
             let newState = this.state.players;
             newState.filter(player => (player.username === member.id)).map(player => {
@@ -143,7 +149,11 @@ class Room extends Component {
                         <Chat {...this.props} {...this.state} />
                         <Actions 
                             player={this.state.players.find(player => player.username === this.props.username)}
-                            time={this.state.time} 
+                            players={this.state.players}
+                            time={this.state.time}
+                            doctorSaved={this.state.doctorSaved}
+                            detectiveInvestigated={this.state.detectiveInvestigated}
+                            mafiaVote={this.state.mafiaVote} 
                         />
                     </div>
                 </div>

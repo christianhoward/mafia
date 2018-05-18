@@ -60,8 +60,8 @@ module.exports = function(app) {
         res.send('List updated');
     });
     
-    app.post('/ready-up', (req, res) => {
-        pusher.trigger(`presence-${req.session.room}`, 'ready_up', {
+    app.post('/public-vote', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'public_vote', {
             username: req.body.username,
             vote: req.body.vote,
             voted: req.body.voted
@@ -78,6 +78,11 @@ module.exports = function(app) {
         pusher.trigger(`presence-${req.session.room}`, 'set_timer', req.body);
         res.send('timer set');
     });
+
+    app.post('/doctor-saved', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'doctor_saved', req.body);
+        res.send(`Doctor Saved ${req.body.saved}`);
+    })
 
     app.post('/elimination', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'elimination', {

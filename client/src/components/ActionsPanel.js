@@ -3,15 +3,23 @@ import axios from 'axios';
 
 import Button from './ActionsComponents/Button';
 import Timer from './ActionsComponents/Timer';
+import DoctorVote from './ActionsComponents/DoctorVote';
 
 class ActionsPanel extends Component {
     submitVote(e) {
-        const payload = {
-            username: this.props.player.username,
-            vote: e.target.innerHTML,
-            voted: true
-        };
-        axios.post('/ready-up', payload);
+        if (e.target.getAttribute('data-use') === 'Doctor') {
+            const payload = {
+                saved: e.target.innerHTML.substr(5)
+            }
+            axios.post('/doctor-saved', payload);
+        } else {
+            const payload = {
+                username: this.props.player.username,
+                vote: e.target.innerHTML,
+                voted: true
+            };
+            axios.post('/public-vote', payload);
+        }
     }
     handleElimination() {
         const payload = {
@@ -34,12 +42,14 @@ class ActionsPanel extends Component {
                         <Button 
                             value={'Yes'} 
                             onClick={this.submitVote.bind(this)} 
-                            disabled={this.props.player.voted} 
+                            disabled={this.props.player.voted}
+                            use="generic" 
                         />
                         <Button 
                             value={'No'} 
                             onClick={this.submitVote.bind(this)} 
-                            disabled={this.props.player.voted} 
+                            disabled={this.props.player.voted}
+                            use="generic"  
                         />
                     </div>
                     <div>
@@ -53,6 +63,14 @@ class ActionsPanel extends Component {
                     <div>
                         <div>Timer Test</div>
                         <Timer time={this.props.time} countdownStart={5}/>
+                    </div>
+                    <div>
+                        <div>Doctor Saved</div>
+                        <DoctorVote 
+                            players={this.props.players} 
+                            submitVote={this.submitVote.bind(this)}
+                            doctorSaved={this.props.doctorSaved}
+                        />
                     </div>
                 </div>
             );
