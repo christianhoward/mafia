@@ -11,7 +11,7 @@ class ActionsPanel extends Component {
     submitVote(e) {
         if (e.target.getAttribute('data-use') === 'Doctor') {
             const payload = {
-                saved: e.target.innerHTML.substr(5)
+                saved: e.target.value
             }
             axios.post('/doctor-saved', payload);
         } else if (e.target.getAttribute('data-use') === 'Detective') {
