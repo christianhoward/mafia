@@ -6,6 +6,7 @@ import Timer from './ActionsComponents/Timer';
 import DoctorVote from './ActionsComponents/DoctorVote';
 import DetectiveVote from './ActionsComponents/DetectiveVote';
 import MafiaVote from './ActionsComponents/MafiaVote';
+import PublicVote from './ActionsComponents/PublicVotePanel';
 
 class ActionsPanel extends Component {
     submitVote(e) {
@@ -20,11 +21,31 @@ class ActionsPanel extends Component {
             }
             axios.post('/detective-investigated', payload);
         } else if (e.target.getAttribute('data-use') === 'Mafia') {
-            console.log('mafia', e.target.value);
             const payload = {
                 eliminationVote: e.target.value
             }
             axios.post('/mafia-voted', payload);
+        } else if (e.target.getAttribute('data-use') === 'Public-Nomination') {
+            const payload = {
+                publicNomination: e.target.value
+            }
+            axios.post('/public-nomination', payload);
+        } else if (e.target.getAttribute('data-use') === 'Public-Seconded') {
+            const payload = {
+                username: e.target.value,
+                seconded: true
+            };
+            axios.post('/public-seconded', payload);
+        } else if (e.target.getAttribute('data-use') === 'Public-Fate') {
+            const payload = {
+                publicNomination: {
+                    username: e.target.value,
+                    vote: e.target.innerHTML
+                },
+                username: this.props.player.username
+            }
+            console.log(payload);
+            axios.post('/public-fate', payload)
         } else {
             const payload = {
                 username: this.props.player.username,
@@ -98,6 +119,14 @@ class ActionsPanel extends Component {
                         <MafiaVote 
                             players={this.props.players} 
                             submitVote={this.submitVote.bind(this)}
+                        />
+                    </div>
+                    <div>
+                        <div>Public Vote Panel</div>
+                        <PublicVote 
+                            players={this.props.players} 
+                            submitVote={this.submitVote.bind(this)}
+                            publicNominations={this.props.publicNominations}
                         />
                     </div>
                 </div>

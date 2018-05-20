@@ -94,6 +94,27 @@ module.exports = function(app) {
         res.send(`Mafia voted ${req.body.investigated}`);
     });
 
+    app.post('/public-nomination', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'public_nomination', req.body);
+        res.send(`Public Nomination for ${req.body.publicNomination}`);
+    });
+
+    app.post('/public-seconded', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'public_seconded', {
+            username: req.body.username,
+            seconded: req.body.secoded
+        });
+        res.send(`Public Seconded for ${req.body.username}`);
+    });
+
+    app.post('/public-fate', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'public_fate', {
+            username: req.body.username,
+            publicNomination: req.body.publicNomination
+        });
+        res.send(`Public voted for ${req.body.publicNomination.username}`);
+    });
+
     app.post('/elimination', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'elimination', {
             username: req.body.username

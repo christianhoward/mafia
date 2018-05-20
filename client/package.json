@@ -33,6 +33,15 @@
     "/mafia-voted": {
       "target": "http://localhost:5000"
     },
+    "/public-nomination": {
+      "target": "http://localhost:5000"
+    },
+    "/public-seconded": {
+      "target": "http://localhost:5000"
+    },
+    "/public-fate": {
+      "target": "http://localhost:5000"
+    },
     "/elimination": {
       "target": "http://localhost:5000"
     }

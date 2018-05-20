@@ -23,7 +23,8 @@ class Room extends Component {
           chatLocked: false,
           doctorSaved: '',
           detectiveInvestigated: [],
-          mafiaVoted: []
+          mafiaVoted: [],
+          publicNominations: []
         };
         this.updatePlayerList = this.updatePlayerList.bind(this);
     }
@@ -120,6 +121,24 @@ class Room extends Component {
         channel.bind('mafia_voted', data => {
             this.setState({ mafiaVoted: [...this.state.mafiaVoted, data.eliminationVote] });
         });
+        channel.bind('public_nomination', data => {
+            this.setState({ publicNominations: [...this.state.publicNominations, { username: data.publicNomination, seconded: false }] });
+        });
+        channel.bind('public_seconded', data => {
+            let newState = this.state.publicNominations;
+            newState.filter(player => (player.username === data.username)).map(player => {
+                player.seconded = true;
+                player.fate = 0;
+            });
+            this.setState({ publicNominations: newState });
+        });
+        channel.bind('public_fate', data => {
+            let newState = this.state.publicNominations;
+            newState.filter(player => (player.username === data.publicNomination.username)).map(player => {
+                player.fate = data.publicNomination.vote === 'Yes' ? player.fate+1 : player.fate-1
+            });
+            this.setState({ publicNominations: newState });
+        });
         channel.bind('pusher:member_removed', (member) => {
             let newState = this.state.players;
             newState.filter(player => (player.username === member.id)).map(player => {
@@ -160,6 +179,7 @@ class Room extends Component {
                             doctorSaved={this.state.doctorSaved}
                             detectiveInvestigated={this.state.detectiveInvestigated}
                             mafiaVote={this.state.mafiaVote} 
+                            publicNominations={this.state.publicNominations}
                         />
                     </div>
                 </div>
