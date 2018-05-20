@@ -23,7 +23,7 @@ class Room extends Component {
           chatLocked: false,
           doctorSaved: '',
           detectiveInvestigated: [],
-          mafiaVote: []
+          mafiaVoted: []
         };
         this.updatePlayerList = this.updatePlayerList.bind(this);
     }
@@ -116,6 +116,9 @@ class Room extends Component {
         });
         channel.bind('detective_investigated', data => {
             this.setState({ detectiveInvestigated: [...this.state.detectiveInvestigated, data.investigated] });
+        });
+        channel.bind('mafia_voted', data => {
+            this.setState({ mafiaVoted: [...this.state.mafiaVoted, data.eliminationVote] });
         });
         channel.bind('pusher:member_removed', (member) => {
             let newState = this.state.players;

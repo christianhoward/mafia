@@ -30,6 +30,9 @@
     "/detective-investigated": {
       "target": "http://localhost:5000"
     },
+    "/mafia-voted": {
+      "target": "http://localhost:5000"
+    },
     "/elimination": {
       "target": "http://localhost:5000"
     }

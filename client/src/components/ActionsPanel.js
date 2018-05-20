@@ -5,6 +5,7 @@ import Button from './ActionsComponents/Button';
 import Timer from './ActionsComponents/Timer';
 import DoctorVote from './ActionsComponents/DoctorVote';
 import DetectiveVote from './ActionsComponents/DetectiveVote';
+import MafiaVote from './ActionsComponents/MafiaVote';
 
 class ActionsPanel extends Component {
     submitVote(e) {
@@ -18,6 +19,12 @@ class ActionsPanel extends Component {
                 investigated: e.target.value
             }
             axios.post('/detective-investigated', payload);
+        } else if (e.target.getAttribute('data-use') === 'Mafia') {
+            console.log('mafia', e.target.value);
+            const payload = {
+                eliminationVote: e.target.value
+            }
+            axios.post('/mafia-voted', payload);
         } else {
             const payload = {
                 username: this.props.player.username,
@@ -84,6 +91,13 @@ class ActionsPanel extends Component {
                             players={this.props.players} 
                             submitVote={this.submitVote.bind(this)}
                             detectiveInvestigated={this.props.detectiveInvestigated}
+                        />
+                    </div>
+                    <div>
+                        <div>Mafia Eliminated</div>
+                        <MafiaVote 
+                            players={this.props.players} 
+                            submitVote={this.submitVote.bind(this)}
                         />
                     </div>
                 </div>

@@ -89,6 +89,11 @@ module.exports = function(app) {
         res.send(`Detective investigated ${req.body.investigated}`);
     });
 
+    app.post('/mafia-voted', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'mafia_voted', req.body);
+        res.send(`Mafia voted ${req.body.investigated}`);
+    });
+
     app.post('/elimination', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'elimination', {
             username: req.body.username
