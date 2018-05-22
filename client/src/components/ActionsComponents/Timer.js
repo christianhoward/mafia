@@ -8,6 +8,9 @@ class Timer extends Component {
             countdownStatus: 'stopped'
         }
     }
+    componentDidMount() {
+        this.runTimer();
+    }
     componentWillUnmount() {
         clearInterval(this.timer);
         this.timer = undefined;
@@ -27,7 +30,7 @@ class Timer extends Component {
         this.setState({ countdownStatus: 'started' });
         this.timer = setInterval(() => {
             let payload;
-            if (this.props.time === '') {
+            if (this.props.time === '' || this.props.time === 0) {
                 payload = {
                     time: this.props.countdownStart - 1
                 };
@@ -45,11 +48,8 @@ class Timer extends Component {
     }
     render() {
         return (
-            <div>
-                <div className="clock">
-                    <span className="clock-text">{this.formatTime((this.props.time === '' ? this.props.countdownStart : this.props.time))}</span>
-                </div>
-                <button onClick={this.runTimer.bind(this)}>Start Timer</button>
+            <div className="clock">
+                <span className="clock-text">{this.formatTime((this.props.time === '' || this.props.time === 0 ? this.props.countdownStart : this.props.time))}</span>
             </div>
         );
     }
