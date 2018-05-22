@@ -15,7 +15,7 @@ class DoctorVote extends Component {
     render() {
         return (
             <div>
-                <div>You saved <strong>{this.props.doctorSaved ? this.props.doctorSaved.toUpperCase() : 'NO ONE'}</strong> last night.</div>
+                <div>You saved <strong>{this.props.doctorSaved ? this.props.doctorSaved.toUpperCase() : 'NO ONE'}</strong> last night. Whou would you like to save tonight?</div>
                 {this.props.players.filter(player => player.eliminated === false).map(player => {
                     return (
                         <div key={player.username}>
