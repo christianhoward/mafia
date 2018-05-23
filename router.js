@@ -115,6 +115,14 @@ module.exports = function(app) {
         res.send(`Public voted for ${req.body.publicNomination.username}`);
     });
 
+    app.post('/phase-shift', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'phase_shift', {
+            gameTime: req.body.gameTime,
+            timer: req.body.timer
+        });
+        res.send('Phase shift');
+    });
+
     app.post('/elimination', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'elimination', {
             username: req.body.username

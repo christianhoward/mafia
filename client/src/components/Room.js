@@ -24,7 +24,9 @@ class Room extends Component {
           doctorSaved: '',
           detectiveInvestigated: [],
           mafiaVoted: [],
-          publicNominations: []
+          publicNominations: [],
+          gameTime: null,
+          timer: ''
         };
         this.updatePlayerList = this.updatePlayerList.bind(this);
     }
@@ -139,6 +141,9 @@ class Room extends Component {
             });
             this.setState({ publicNominations: newState });
         });
+        channel.bind('phase_shift', data => {
+            this.setState({ gameTime: data.gameTime, timer: data.timer });
+        });
         channel.bind('pusher:member_removed', (member) => {
             let newState = this.state.players;
             newState.filter(player => (player.username === member.id)).map(player => {
@@ -180,6 +185,8 @@ class Room extends Component {
                             detectiveInvestigated={this.state.detectiveInvestigated}
                             mafiaVote={this.state.mafiaVote} 
                             publicNominations={this.state.publicNominations}
+                            timer={this.state.timer}
+                            gameTime={this.state.gameTime}
                         />
                     </div>
                 </div>

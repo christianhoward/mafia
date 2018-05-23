@@ -5,10 +5,12 @@ class Timer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            countdownStatus: 'stopped'
+            countdownStatus: 'stopped',
+            time: 0
         }
     }
     componentDidMount() {
+        this.setState({ time: this.props.countdownStart });
         this.runTimer();
     }
     componentWillUnmount() {
@@ -30,26 +32,34 @@ class Timer extends Component {
         this.setState({ countdownStatus: 'started' });
         this.timer = setInterval(() => {
             let payload;
-            if (this.props.time === '' || this.props.time === 0) {
-                payload = {
-                    time: this.props.countdownStart - 1
-                };
+            if (this.state.time === '' || this.state.time === 0) {
+                // payload = {
+                //     time: this.props.countdownStart - 1
+                // };
+                this.setState({ time: this.props.countdownStart - 1 });
             } else {
-                payload = {
-                    time: this.props.time - 1
-                };
+                // payload = {
+                //     time: this.props.time - 1
+                // };
+                this.setState({ time: this.state.time - 1 });
             }
-            axios.post('/set-timer', payload);
-            if (payload.time === 0) {
+            // axios.post('/set-timer', payload);
+            // if (payload.time === 0) {
+            //     this.setState({ countdownStatus: 'stopped' });
+            //     clearInterval(this.timer);
+            //     this.timer = undefined;
+            // }
+            if (this.state.time === 0) {
                 this.setState({ countdownStatus: 'stopped' });
                 clearInterval(this.timer);
+                this.timer = undefined;
             }
         }, 1000);
     }
     render() {
         return (
             <div className="clock">
-                <span className="clock-text">{this.formatTime((this.props.time === '' || this.props.time === 0 ? this.props.countdownStart : this.props.time))}</span>
+                <span className="clock-text">{this.formatTime((this.state.time === '' || this.state.time === 0 ? this.props.countdownStart : this.state.time))}</span>
             </div>
         );
     }

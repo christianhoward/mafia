@@ -9,6 +9,11 @@ import MafiaVote from './ActionsComponents/MafiaVote';
 import PublicVote from './ActionsComponents/PublicVotePanel';
 
 class ActionsPanel extends Component {
+    componentDidMount() {
+        // this.setStartTimeout = setTimeout(() => {
+        //     this.runGame();
+        // }, 10000);
+    }
     submitVote(e) {
         if (e.target.getAttribute('data-use') === 'Doctor') {
             const payload = {
@@ -64,71 +69,83 @@ class ActionsPanel extends Component {
     assignRoles() {
         axios.post('/assign-roles', []);
     }
-    render() {
-        if (!this.props.player) {
-            return null
+    game() {
+        let payload;
+        if (this.props.gameTime === 'Day') {
+            payload = { gameTime: 'Night', timer: 15 };
+        } else if (this.props.gameTime === 'Night') {
+            payload = { gameTime: 'Day', timer: 30 };
         } else {
+            this.assignRoles();
+            payload = { gameTime: 'Day', timer: 30 };
+        }
+        axios.post('/phase-shift', payload);
+        this.gameTimeout = setTimeout(() => {
+            this.game();
+        }, payload.timer * 1000);
+    }
+    runGame() {
+        this.setTimeout = setTimeout(() => {
+            this.game();
+        }, 1000);
+    }
+    renderNight() {
+        if (this.props.player.role === 'Mafia') {
+            return <MafiaVote 
+                    players={this.props.players} 
+                    submitVote={this.submitVote.bind(this)}
+                />
+        } else if (this.props.player.role === 'Doctor') {
+            return <DoctorVote 
+                    players={this.props.players} 
+                    submitVote={this.submitVote.bind(this)}
+                    doctorSaved={this.props.doctorSaved}
+                />
+        } else if (this.props.player.role === 'Detective') {
+            return <DetectiveVote 
+                    players={this.props.players} 
+                    submitVote={this.submitVote.bind(this)}
+                    detectiveInvestigated={this.props.detectiveInvestigated}
+                />
+        } else {
+            return <div>Nothing to do but sleep the night away!</div>
+        }
+    }
+    render() {
+        if (this.props.gameTime === 'Day') {
             return (
                 <div className="actions">
-                    <div>Actions</div>
                     <div>
-                        <div>General Yes/No Voting Test</div>
-                        <Button 
-                            value={'Yes'} 
-                            onClick={this.submitVote.bind(this)} 
-                            disabled={this.props.player.voted}
-                            use="generic" 
-                        />
-                        <Button 
-                            value={'No'} 
-                            onClick={this.submitVote.bind(this)} 
-                            disabled={this.props.player.voted}
-                            use="generic"  
-                        />
-                    </div>
-                    <div>
-                        <div>Assign Roles Test</div>
-                        <button onClick={this.assignRoles.bind(this)}>Assign Roles</button>
-                    </div>
-                    <div>
-                        <div>Elimination Test</div>
-                        <button onClick={this.handleElimination.bind(this)}>Eliminate Myself</button>
-                    </div>
-                    <div>
-                        <div>Timer Test</div>
-                        <Timer time={this.props.time} countdownStart={5}/>
-                    </div>
-                    <div>
-                        <div>Doctor Saved</div>
-                        <DoctorVote 
-                            players={this.props.players} 
-                            submitVote={this.submitVote.bind(this)}
-                            doctorSaved={this.props.doctorSaved}
-                        />
-                    </div>
-                    <div>
-                        <div>Detective Investigated</div>
-                        <DetectiveVote 
-                            players={this.props.players} 
-                            submitVote={this.submitVote.bind(this)}
-                            detectiveInvestigated={this.props.detectiveInvestigated}
-                        />
-                    </div>
-                    <div>
-                        <div>Mafia Eliminated</div>
-                        <MafiaVote 
-                            players={this.props.players} 
-                            submitVote={this.submitVote.bind(this)}
-                        />
-                    </div>
-                    <div>
-                        <div>Public Vote Panel</div>
+                        <Timer countdownStart={this.props.timer} />
+                        <div>You are {this.props.player.role}</div>
                         <PublicVote 
                             players={this.props.players} 
                             submitVote={this.submitVote.bind(this)}
                             publicNominations={this.props.publicNominations}
                         />
                     </div>
+                </div>
+            );
+        } else if (this.props.gameTime === 'Night') {
+            return (
+                <div>
+                    <Timer countdownStart={this.props.timer} />
+                    <div>You are {this.props.player.role}</div>
+                    <div>{this.renderNight()}</div>
+                </div>
+            );
+        } else { 
+            return (
+                <div>
+                    <div>
+                        Waiting to start the game
+                    </div>
+                    <Button 
+                        value={'Start'} 
+                        onClick={this.runGame.bind(this)} 
+                        disabled={null}
+                        use="generic"  
+                    />
                 </div>
             );
         }

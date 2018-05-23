@@ -42,6 +42,9 @@
     "/public-fate": {
       "target": "http://localhost:5000"
     },
+    "/phase-shift": {
+      "target": "http://localhost:5000"
+    },
     "/elimination": {
       "target": "http://localhost:5000"
     }
