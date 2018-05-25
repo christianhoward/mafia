@@ -50,7 +50,8 @@ module.exports = function(app) {
         pusher.trigger(`presence-${req.session.room}`, 'message_sent', {
             username: req.body.username,
             message: req.body.message,
-            timeStamp: req.body.timeStamp
+            timeStamp: req.body.timeStamp,
+            chat: req.body.chat
         });
         res.send('Message sent');
     });
@@ -67,11 +68,6 @@ module.exports = function(app) {
             voted: req.body.voted
         });
         res.send('vote cast');
-    });
-
-    app.post('/assign-roles', (req, res) => {
-        pusher.trigger(`presence-${req.session.room}`, 'assign_roles', req.body);
-        res.send('roles assigned');
     });
 
     app.post('/set-timer', (req, res) => {
@@ -118,7 +114,8 @@ module.exports = function(app) {
     app.post('/phase-shift', (req, res) => {
         pusher.trigger(`presence-${req.session.room}`, 'phase_shift', {
             gameTime: req.body.gameTime,
-            timer: req.body.timer
+            timer: req.body.timer,
+            chatLocked: req.body.chatLocked
         });
         res.send('Phase shift');
     });

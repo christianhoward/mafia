@@ -118,6 +118,13 @@ button:disabled {
   position: relative;
 }
 
+.chat-mafia {
+  border: 1px solid black;
+  height: 70vh;
+  width: 35vw;
+  position: relative;
+}
+
 .chat-list {
   height: 91%;
   overflow-y: auto;
@@ -144,6 +151,12 @@ button:disabled {
   border: none;
   padding: 10px;
   box-sizing: border-box;
+}
+
+.chat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
 }
 
 .actions {

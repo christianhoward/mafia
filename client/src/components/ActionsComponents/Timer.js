@@ -33,22 +33,10 @@ class Timer extends Component {
         this.timer = setInterval(() => {
             let payload;
             if (this.state.time === '' || this.state.time === 0) {
-                // payload = {
-                //     time: this.props.countdownStart - 1
-                // };
                 this.setState({ time: this.props.countdownStart - 1 });
             } else {
-                // payload = {
-                //     time: this.props.time - 1
-                // };
                 this.setState({ time: this.state.time - 1 });
             }
-            // axios.post('/set-timer', payload);
-            // if (payload.time === 0) {
-            //     this.setState({ countdownStatus: 'stopped' });
-            //     clearInterval(this.timer);
-            //     this.timer = undefined;
-            // }
             if (this.state.time === 0) {
                 this.setState({ countdownStatus: 'stopped' });
                 clearInterval(this.timer);

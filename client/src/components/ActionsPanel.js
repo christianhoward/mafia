@@ -12,7 +12,7 @@ class ActionsPanel extends Component {
     componentDidMount() {
         // this.setStartTimeout = setTimeout(() => {
         //     this.runGame();
-        // }, 10000);
+        // }, 15000);
     }
     submitVote(e) {
         if (e.target.getAttribute('data-use') === 'Doctor') {
@@ -66,18 +66,23 @@ class ActionsPanel extends Component {
         };
         axios.post('/elimination', payload);
     }
-    assignRoles() {
-        axios.post('/assign-roles', []);
-    }
     game() {
         let payload;
         if (this.props.gameTime === 'Day') {
-            payload = { gameTime: 'Night', timer: 15 };
-        } else if (this.props.gameTime === 'Night') {
-            payload = { gameTime: 'Day', timer: 30 };
+            if (this.props.publicNominations[0].fate > 0 && this.props.publicNominations[0].count === this.props.count) {
+                axios.post('/elimination', { username: this.props.publicNominations[0].username });
+                this.setState({ publicNominations: [] });
+            }
+            payload = { gameTime: 'Night-Mafia', timer: 15, chatLocked: true };
+        } else if (this.props.gameTime === 'Night-Mafia') {
+            payload = { gameTime: 'Night-Doctor', timer: 15, chatLocked: true };
+        } else if (this.props.gameTime === 'Night-Doctor') {
+            payload = { gameTime: 'Night-Detective', timer: 15, chatLocked: true };
+        } else if (this.props.gameTime === 'Night-Detective') {
+            payload = { gameTime: 'Day', timer: 30, chatLocked: false };
         } else {
-            this.assignRoles();
-            payload = { gameTime: 'Day', timer: 30 };
+            // this.assignRoles();
+            payload = { gameTime: 'Day', timer: 30, chatLocked: false };
         }
         axios.post('/phase-shift', payload);
         this.gameTimeout = setTimeout(() => {
@@ -91,22 +96,36 @@ class ActionsPanel extends Component {
     }
     renderNight() {
         if (this.props.player.role === 'Mafia') {
-            return <MafiaVote 
+            if (this.props.gameTime === 'Night-Mafia') {
+                return <MafiaVote 
                     players={this.props.players} 
                     submitVote={this.submitVote.bind(this)}
                 />
+            } else {
+                return <div>Sleep well!</div>
+            }
         } else if (this.props.player.role === 'Doctor') {
-            return <DoctorVote 
+            if (this.props.gameTime === 'Night-Mafia') {
+                return <div>Think about who you will save.</div>
+            } else if (this.props.gameTime === 'Night-Doctor') {
+                return <DoctorVote 
                     players={this.props.players} 
                     submitVote={this.submitVote.bind(this)}
                     doctorSaved={this.props.doctorSaved}
                 />
+            } else {
+                return <div>Sleep well!</div>
+            }
         } else if (this.props.player.role === 'Detective') {
-            return <DetectiveVote 
+            if (this.props.gameTime === 'Night-Detective') {
+                return <DetectiveVote 
                     players={this.props.players} 
                     submitVote={this.submitVote.bind(this)}
                     detectiveInvestigated={this.props.detectiveInvestigated}
                 />
+            } else {
+                return <div>Think about who you want to investigate</div>
+            }
         } else {
             return <div>Nothing to do but sleep the night away!</div>
         }
@@ -126,15 +145,7 @@ class ActionsPanel extends Component {
                     </div>
                 </div>
             );
-        } else if (this.props.gameTime === 'Night') {
-            return (
-                <div>
-                    <Timer countdownStart={this.props.timer} />
-                    <div>You are {this.props.player.role}</div>
-                    <div>{this.renderNight()}</div>
-                </div>
-            );
-        } else { 
+        } else if (this.props.gameTime === null) {
             return (
                 <div>
                     <div>
@@ -146,6 +157,21 @@ class ActionsPanel extends Component {
                         disabled={null}
                         use="generic"  
                     />
+                </div>
+            );
+        } else if (this.props.player.eliminated) {
+            return ( 
+                <div>
+                    <Timer countdownStart={this.props.timer} />
+                    <div>You have been eliminated from the game.</div>
+                </div>
+            );
+        } else { 
+            return (
+                <div>
+                    <Timer countdownStart={this.props.timer} />
+                    <div>You are {this.props.player.role}</div>
+                    <div>{this.renderNight()}</div>
                 </div>
             );
         }
