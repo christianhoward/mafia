@@ -15,25 +15,29 @@ class MafiaVote extends Component {
     render() {
         return (
             <div>
-                <div>Who would you like to eliminate?</div>
-                {this.props.players.filter(player => player.eliminated === false && player.role !== 'Mafia').map(player => {
-                    return (
-                        <div key={player.username}>
-                            <label>
-                                <input 
-                                    type="radio" 
-                                    name={player.username} 
-                                    value={player.username} 
-                                    checked={player.username === this.state.eliminationVote}
-                                    onChange={this.handleRadioButtons.bind(this)}
-                                    disabled={null}
-                                />
-                                {player.username}
-                            </label>
-                        </div>
-                    );
-                })}
-                <Button value={this.state.eliminationVote} onClick={this.props.submitVote} disabled={null} use='Mafia'>Submit</Button>
+                <div className="role">Who would you like to eliminate?</div>
+                <div className="role">
+                    {this.props.players.filter(player => player.eliminated === false && player.role !== 'Mafia').map(player => {
+                        return (
+                            <div key={player.username}>
+                                <label>
+                                    <input 
+                                        type="radio" 
+                                        name={player.username} 
+                                        value={player.username} 
+                                        checked={player.username === this.state.eliminationVote}
+                                        onChange={this.handleRadioButtons.bind(this)}
+                                        disabled={null}
+                                    />
+                                    {player.username}
+                                </label>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className="button-group">
+                    <Button value={this.state.eliminationVote} onClick={this.props.submitVote} disabled={null} use='Mafia'>Submit</Button>
+                </div>
             </div>
         );
     }

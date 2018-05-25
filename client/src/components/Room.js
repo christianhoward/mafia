@@ -147,7 +147,9 @@ class Room extends Component {
             newState.filter(player => (player.username === member.id)).map(player => {
                 player.eliminated = true;
             });
-            this.setState({ chats: [...this.state.chats, { username: 'Admin', message: `${member.id} has left the game.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ], players: newState });
+            let newEliminated = this.state.eliminated;
+            newState.find(player => player.username === member.id).role === 'Mafia' ? newEliminated[0].eliminated += 1 : newEliminated[1].eliminated += 1;
+            this.setState({ chats: [...this.state.chats, { username: 'Admin', message: `${member.id} has left the game.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ], players: newState, eliminated: newEliminated });
         });
         // setTimeout(() => { this.setState({ loading: false }) }, 4000);
     }

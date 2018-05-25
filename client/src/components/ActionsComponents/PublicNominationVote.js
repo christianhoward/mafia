@@ -15,26 +15,30 @@ class PublicVote extends Component {
     render() {
         return (
             <div>
-                <div>Who would you like to nominate?</div>
-                {this.props.players.filter(player => player.eliminated === false && player.username !== this.props.username).map(player => {
-                    return (
-                        <div key={player.username}>
-                            <label>
-                                <input 
-                                    type="radio" 
-                                    name={player.username} 
-                                    value={player.username} 
-                                    checked={player.username === this.state.publicVote}
-                                    onChange={this.handleRadioButtons.bind(this)}
-                                    disabled={null}
-                                    
-                                />
-                                {player.username}
-                            </label>
-                        </div>
-                    );
-                })}
-                <Button value={this.state.publicVote} onClick={this.props.submitVote} disabled={null} use='Public-Nomination'>Submit</Button>
+                <div className="role">Who would you like to nominate?</div>
+                <div className="role">
+                    {this.props.players.filter(player => player.eliminated === false && player.username !== this.props.username).map(player => {
+                        return (
+                            <div key={player.username}>
+                                <label>
+                                    <input 
+                                        type="radio" 
+                                        name={player.username} 
+                                        value={player.username} 
+                                        checked={player.username === this.state.publicVote}
+                                        onChange={this.handleRadioButtons.bind(this)}
+                                        disabled={null}
+                                        
+                                    />
+                                    {player.username}
+                                </label>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className="button-group">
+                    <Button value={this.state.publicVote} onClick={this.props.submitVote} disabled={null} use='Public-Nomination' className="button-group__button">Submit</Button>
+                </div>
             </div>
         );
     }

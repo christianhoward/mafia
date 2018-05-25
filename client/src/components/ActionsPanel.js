@@ -86,10 +86,10 @@ class ActionsPanel extends Component {
             if (this.props.publicNominations.length > 0 && this.props.mafiaVoted[0].count >= 1 && this.props.mafiaVoted[0].username !== this.props.doctorSaved) {
                 axios.post('/elimination', { username: this.props.mafiaVoted[0].username });
             }
-            payload = { gameTime: 'Day', timer: 120, chatLocked: false };
+            payload = { gameTime: 'Day', timer: 30, chatLocked: false };
         } else {
             // this.assignRoles();
-            payload = { gameTime: 'Day', timer: 120, chatLocked: false };
+            payload = { gameTime: 'Day', timer: 30, chatLocked: false };
         }
         axios.post('/phase-shift', payload);
         this.gameTimeout = setTimeout(() => {
@@ -109,11 +109,11 @@ class ActionsPanel extends Component {
                     submitVote={this.submitVote.bind(this)}
                 />
             } else {
-                return <div>Sleep well!</div>
+                return <div className="role">Sleep well!</div>
             }
         } else if (this.props.player.role === 'Doctor') {
             if (this.props.gameTime === 'Night-Mafia') {
-                return <div>Think about who you will save.</div>
+                return <div className="role">Think about who you will save.</div>
             } else if (this.props.gameTime === 'Night-Doctor') {
                 return <DoctorVote 
                     players={this.props.players} 
@@ -121,7 +121,7 @@ class ActionsPanel extends Component {
                     doctorSaved={this.props.doctorSaved}
                 />
             } else {
-                return <div>Sleep well!</div>
+                return <div className="role">Sleep well!</div>
             }
         } else if (this.props.player.role === 'Detective') {
             if (this.props.gameTime === 'Night-Detective') {
@@ -132,10 +132,10 @@ class ActionsPanel extends Component {
                     detectiveInvestigated={this.props.detectiveInvestigated}
                 />
             } else {
-                return <div>Think about who you want to investigate</div>
+                return <div className="role">Think about who you want to investigate</div>
             }
         } else {
-            return <div>Nothing to do but sleep the night away!</div>
+            return <div className="role">Nothing to do but sleep the night away!</div>
         }
     }
     render() {
@@ -144,7 +144,7 @@ class ActionsPanel extends Component {
                 <div className="actions">
                     <div>
                         <Timer countdownStart={this.props.timer} />
-                        <div>You are {this.props.player.role}</div>
+                        <div className="role">You are <strong>{this.props.player.role}</strong></div>
                         <PublicVote 
                             players={this.props.players} 
                             submitVote={this.submitVote.bind(this)}
@@ -157,7 +157,7 @@ class ActionsPanel extends Component {
         } else if (this.props.gameTime === null) {
             return (
                 <div className="actions">
-                    <div>
+                    <div className="role">
                         Waiting to start the game
                     </div>
                     <Button 
@@ -172,14 +172,14 @@ class ActionsPanel extends Component {
             return ( 
                 <div className="actions">
                     <Timer countdownStart={this.props.timer} />
-                    <div>You have been eliminated from the game.</div>
+                    <div className="role">You have been eliminated from the game.</div>
                 </div>
             );
         } else { 
             return (
                 <div className="actions">
                     <Timer key={this.props.timer} countdownStart={this.props.timer} />
-                    <div>You are {this.props.player.role}</div>
+                    <div className="role">You are <strong>{this.props.player.role}</strong></div>
                     <div>{this.renderNight()}</div>
                 </div>
             );

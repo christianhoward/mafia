@@ -28,6 +28,15 @@ button:disabled {
   pointer-events: none;
 }
 
+.join {
+  width: 40%;
+  height: 20px;
+  font-size: 16px;
+  border: 1 px solid black;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
 .header {
   background-color: #000000;
   height: 60px;
@@ -161,6 +170,7 @@ button:disabled {
 
 .actions {
   border: 1px solid black;
+  padding: 5px;
 }
 
 .clock {
@@ -176,3 +186,26 @@ button:disabled {
   font-size: 2.25rem;
   font-weight: 300;
 }
+
+.role {
+  text-align: center;
+  padding: 5px;
+}
+
+.button-group {
+  padding: 5px;
+  text-align: center;
+}
+
+.button-group__button {
+  padding: 5px;
+}
+
+.spacing {
+  padding: 5px;
+}
+
+/* .module {
+  margin: auto;
+  width: 50%;
+} */
