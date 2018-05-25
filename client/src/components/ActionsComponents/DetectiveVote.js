@@ -16,7 +16,7 @@ class DetectiveVote extends Component {
         return (
             <div>
                 <div>Who would you like to investigate?</div>
-                {this.props.players.filter(player => player.eliminated === false).map(player => {
+                {this.props.players.filter(player => player.eliminated === false && player.username !== this.props.player.username).map(player => {
                     return (
                         <div key={player.username}>
                             <label>
@@ -29,7 +29,7 @@ class DetectiveVote extends Component {
                                     disabled={player.eliminated === true || this.props.detectiveInvestigated.find(investigatedPlayer => investigatedPlayer === player.username) === player.username}
                                     
                                 />
-                                {player.username} {this.props.detectiveInvestigated.find(investigatedPlayer => investigatedPlayer === player.username) === player.username ? `${player.username} is part of the ${player.role}` : null}
+                                {player.username} {this.props.detectiveInvestigated.find(investigatedPlayer => investigatedPlayer === player.username) === player.username ? `${player.username} is part of the ${player.role === 'Doctor' || player.role === 'Detective' ? 'Villagers' : player.role}` : null}
                             </label>
                         </div>
                     );

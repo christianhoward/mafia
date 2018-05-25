@@ -16,7 +16,7 @@ class MafiaVote extends Component {
         return (
             <div>
                 <div>Who would you like to eliminate?</div>
-                {this.props.players.filter(player => player.eliminated === false).map(player => {
+                {this.props.players.filter(player => player.eliminated === false && player.role !== 'Mafia').map(player => {
                     return (
                         <div key={player.username}>
                             <label>

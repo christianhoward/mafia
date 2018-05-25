@@ -16,14 +16,12 @@ class Room extends Component {
             inProgress: false,
             eliminated: [{ group: 'Mafia', eliminated: 0 }, { group: 'Villagers', eliminated: 0 }],
             joined: '',
-        //   members: '',
             chats: [],
             mafiaChats: [{ message: "This is the Mafia Only chat. During the Night phase of the game, you can use this chat window to talk to the other members of the Mafia to determine who you want to eliminate.", username: "Admin", timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ],
             players: [],
             roles: ['Mafia', 'Doctor', 'Villager', 'Mafia', 'Villager', 'Detective', 'Villager'],
             count: 0,
-            loading: true,
-            time: '',
+            // loading: true,
             chatLocked: false,
             doctorSaved: '',
             detectiveInvestigated: [],
@@ -39,9 +37,6 @@ class Room extends Component {
         if (!this.props.username) {
             this.props.history.push('/');
         }
-        // if (this.state.count > 3) {
-        //     alert('Too many players!');
-        // }
         // Connect to Pusher Instance
         const pusher = new Pusher(pusherConnection.key, {
             cluster: pusherConnection.cluster,
@@ -65,8 +60,6 @@ class Room extends Component {
                 });
             });
             this.updatePlayerList(players);
-            // Sets the members in the room for Pusher -- THIS MIGHT NOT BE NEEDED
-            // this.setState({ members });
         });
         // Logic for when a new member is added to the chat
         channel.bind('pusher:member_added', (member) => {
@@ -98,8 +91,7 @@ class Room extends Component {
             let newEliminated = this.state.eliminated;
             newState.filter(player => (player.username === data.username)).map(player => {
                 player.eliminated = true;
-            });
-            // newState.find(player => player.username === data.username).role === 'Mafia' ? newEliminated.find(group => group.group === 'Mafia').eliminated +=1 : newEliminated.find(group => group.group === 'Villager').eliminated +=1;  
+            }); 
             newState.find(player => player.username === data.username).role === 'Mafia' ? newEliminated[0].eliminated += 1 : newEliminated[1].eliminated += 1;
             this.setState({ players: newState, chats: [...this.state.chats, { username: 'Admin', message: `${data.username} has been eliminated.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ], publicNominations: [], mafiaVoted: [], eliminated: newEliminated });
         });
@@ -183,15 +175,6 @@ class Room extends Component {
                 gameTime={this.state.gameTime}
                 count={this.state.count}
             />
-        }
-    }
-    renderMembers() {
-        if (this.state.players) {
-            return this.state.players.map(player => {
-                return (
-                    <li>{player.username} - {player.vote}</li>
-                );
-            });
         }
     }
     render() {
