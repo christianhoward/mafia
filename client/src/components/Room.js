@@ -13,22 +13,24 @@ class Room extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          joined: '',
+            inProgress: false,
+            eliminated: [{ group: 'Mafia', eliminated: 0 }, { group: 'Villagers', eliminated: 0 }],
+            joined: '',
         //   members: '',
-          chats: [],
-          mafiaChats: [{ message: "This is the Mafia Only chat. During the Night phase of the game, you can use this chat window to talk to the other members of the Mafia to determine who you want to eliminate.", username: "Admin", timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ],
-          players: [],
-          roles: ['Mafia', 'Doctor', 'Villager', 'Mafia', 'Villager', 'Detective', 'Villager'],
-          count: 0,
-          loading: true,
-          time: '',
-          chatLocked: false,
-          doctorSaved: '',
-          detectiveInvestigated: [],
-          mafiaVoted: [],
-          publicNominations: [],
-          gameTime: null,
-          timer: ''
+            chats: [],
+            mafiaChats: [{ message: "This is the Mafia Only chat. During the Night phase of the game, you can use this chat window to talk to the other members of the Mafia to determine who you want to eliminate.", username: "Admin", timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ],
+            players: [],
+            roles: ['Mafia', 'Doctor', 'Villager', 'Mafia', 'Villager', 'Detective', 'Villager'],
+            count: 0,
+            loading: true,
+            time: '',
+            chatLocked: false,
+            doctorSaved: '',
+            detectiveInvestigated: [],
+            mafiaVoted: [],
+            publicNominations: [],
+            gameTime: null,
+            timer: ''
         };
         this.updatePlayerList = this.updatePlayerList.bind(this);
     }
@@ -93,10 +95,13 @@ class Room extends Component {
         });
         channel.bind('elimination', data => {
             let newState = this.state.players;
+            let newEliminated = this.state.eliminated;
             newState.filter(player => (player.username === data.username)).map(player => {
                 player.eliminated = true;
             });
-            this.setState({ players: newState, chats: [...this.state.chats, { username: 'Admin', message: `${data.username} has been eliminated.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ] });
+            // newState.find(player => player.username === data.username).role === 'Mafia' ? newEliminated.find(group => group.group === 'Mafia').eliminated +=1 : newEliminated.find(group => group.group === 'Villager').eliminated +=1;  
+            newState.find(player => player.username === data.username).role === 'Mafia' ? newEliminated[0].eliminated += 1 : newEliminated[1].eliminated += 1;
+            this.setState({ players: newState, chats: [...this.state.chats, { username: 'Admin', message: `${data.username} has been eliminated.`, timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ], publicNominations: [], mafiaVoted: [], eliminated: newEliminated });
         });
         channel.bind('set_timer', data => {
             this.setState({ time: data.time });
@@ -108,7 +113,15 @@ class Room extends Component {
             this.setState({ detectiveInvestigated: [...this.state.detectiveInvestigated, data.investigated] });
         });
         channel.bind('mafia_voted', data => {
-            this.setState({ mafiaVoted: [...this.state.mafiaVoted, data.eliminationVote] });
+            let newState = this.state.mafiaVoted;
+            if (newState.length > 0) {
+                newState.filter(player => (player.username === data.eliminationVote)).map(player => {
+                    player.count += 1;
+                });
+            } else {
+                newState.push({ username: data.eliminationVote, count: 1});
+            }
+            this.setState({ mafiaVoted: newState });
         });
         channel.bind('public_nomination', data => {
             this.setState({ publicNominations: [...this.state.publicNominations, { username: data.publicNomination, seconded: false }] });
@@ -131,7 +144,11 @@ class Room extends Component {
             this.setState({ publicNominations: newState });
         });
         channel.bind('phase_shift', data => {
-            this.setState({ gameTime: data.gameTime, timer: data.timer, chatLocked: data.chatLocked });
+            if (this.state.inProgress === false) {
+                this.setState({ gameTime: data.gameTime, timer: data.timer, chatLocked: data.chatLocked, publicNominations: [], inProgress: true });
+            } else {
+                this.setState({ gameTime: data.gameTime, timer: data.timer, chatLocked: data.chatLocked, publicNominations: [] });
+            }
         });
         channel.bind('pusher:member_removed', (member) => {
             let newState = this.state.players;
@@ -147,6 +164,26 @@ class Room extends Component {
             players
         }
         axios.post('/update-player-list', payload);
+    }
+    renderActions() {
+        if (this.state.eliminated[0].eliminated === 2) {
+            return <div>Villagers Win!</div>
+        } else if (this.state.eliminated[1].eliminated === 5) {
+            return <div>Mafia Wins!</div>
+        } else {
+            return <Actions 
+                player={this.state.players.find(player => player.username === this.props.username)}
+                players={this.state.players}
+                time={this.state.time}
+                doctorSaved={this.state.doctorSaved}
+                detectiveInvestigated={this.state.detectiveInvestigated}
+                mafiaVoted={this.state.mafiaVoted} 
+                publicNominations={this.state.publicNominations}
+                timer={this.state.timer}
+                gameTime={this.state.gameTime}
+                count={this.state.count}
+            />
+        }
     }
     renderMembers() {
         if (this.state.players) {
@@ -168,18 +205,7 @@ class Room extends Component {
                     </div>
                     <div className="interactions-grid">
                         <Chat {...this.props} {...this.state} player={this.state.players.find(player => player.username === this.props.username)} />
-                        <Actions 
-                            player={this.state.players.find(player => player.username === this.props.username)}
-                            players={this.state.players}
-                            time={this.state.time}
-                            doctorSaved={this.state.doctorSaved}
-                            detectiveInvestigated={this.state.detectiveInvestigated}
-                            mafiaVote={this.state.mafiaVote} 
-                            publicNominations={this.state.publicNominations}
-                            timer={this.state.timer}
-                            gameTime={this.state.gameTime}
-                            count={this.state.count}
-                        />
+                        {this.renderActions()}
                     </div>
                 </div>
             );

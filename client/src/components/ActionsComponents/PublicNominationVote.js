@@ -16,7 +16,7 @@ class PublicVote extends Component {
         return (
             <div>
                 <div>Who would you like to nominate?</div>
-                {this.props.players.filter(player => player.eliminated === false || player.username !== this.props.username).map(player => {
+                {this.props.players.filter(player => player.eliminated === false && player.username !== this.props.username).map(player => {
                     return (
                         <div key={player.username}>
                             <label>

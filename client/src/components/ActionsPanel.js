@@ -14,6 +14,12 @@ class ActionsPanel extends Component {
         //     this.runGame();
         // }, 15000);
     }
+    componentWillUnmount() {
+        clearTimeout(this.setTimeout);
+        clearTimeout(this.gameTimeout)
+        this.setTimeout = undefined;
+        this.gameTimeout = undefined;
+    }
     submitVote(e) {
         if (e.target.getAttribute('data-use') === 'Doctor') {
             const payload = {
@@ -49,7 +55,6 @@ class ActionsPanel extends Component {
                 },
                 username: this.props.player.username
             }
-            console.log(payload);
             axios.post('/public-fate', payload)
         } else {
             const payload = {
@@ -69,9 +74,8 @@ class ActionsPanel extends Component {
     game() {
         let payload;
         if (this.props.gameTime === 'Day') {
-            if (this.props.publicNominations[0].fate > 0 && this.props.publicNominations[0].count === this.props.count) {
+            if (this.props.publicNominations.length > 0 && this.props.publicNominations[0].fate > 0) {
                 axios.post('/elimination', { username: this.props.publicNominations[0].username });
-                this.setState({ publicNominations: [] });
             }
             payload = { gameTime: 'Night-Mafia', timer: 15, chatLocked: true };
         } else if (this.props.gameTime === 'Night-Mafia') {
@@ -79,6 +83,9 @@ class ActionsPanel extends Component {
         } else if (this.props.gameTime === 'Night-Doctor') {
             payload = { gameTime: 'Night-Detective', timer: 15, chatLocked: true };
         } else if (this.props.gameTime === 'Night-Detective') {
+            if (this.props.mafiaVoted[0].count >= 1 && this.props.mafiaVoted[0].username !== this.props.doctorSaved) {
+                axios.post('/elimination', { username: this.props.mafiaVoted[0].username });
+            }
             payload = { gameTime: 'Day', timer: 30, chatLocked: false };
         } else {
             // this.assignRoles();
@@ -131,7 +138,7 @@ class ActionsPanel extends Component {
         }
     }
     render() {
-        if (this.props.gameTime === 'Day') {
+        if (this.props.gameTime === 'Day' && !this.props.player.eliminated) {
             return (
                 <div className="actions">
                     <div>
@@ -141,6 +148,7 @@ class ActionsPanel extends Component {
                             players={this.props.players} 
                             submitVote={this.submitVote.bind(this)}
                             publicNominations={this.props.publicNominations}
+                            player={this.props.player}
                         />
                     </div>
                 </div>

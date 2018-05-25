@@ -10,6 +10,7 @@ class PublicVotePanel extends Component {
         super(props);
         this.state = {
             accusation: '',
+            nominator: '',
             seconded: '',
             fate: []
         }
@@ -17,7 +18,7 @@ class PublicVotePanel extends Component {
     }
     handleVote(type, e) {
         if (type === 'accusation') {
-            this.setState({ accusation: e.target.innerHTML });
+            this.setState({ accusation: e.target.innerHTML, nominator: this.props.player.username });
         } else if (type === 'seconded') {
             this.setState({ seconded: e.target.innerHTML });
         } else {
@@ -39,12 +40,15 @@ class PublicVotePanel extends Component {
                 submitVote={this.props.submitVote}
                 nominations={this.props.publicNominations}
                 handleVote={this.handleVote}
+                username={this.props.player.username}
+                nominator={this.state.nominator}
             />
         }
         if (this.state.accusation === 'Yes') {
             return <PublicNominationVote 
                 players={this.props.players} 
                 submitVote={this.props.submitVote}
+                username={this.props.player.username}
             />
         } else {
             return <PublicNomination 
