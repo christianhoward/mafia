@@ -88,7 +88,9 @@ class ActionsPanel extends Component {
             }
             payload = { gameTime: 'Day', timer: 30, chatLocked: false };
         } else {
-            // this.assignRoles();
+            if (this.props.players[0].role === '') {
+                axios.post('/set-roles');
+            }
             payload = { gameTime: 'Day', timer: 30, chatLocked: false };
         }
         axios.post('/phase-shift', payload);
@@ -139,6 +141,7 @@ class ActionsPanel extends Component {
         }
     }
     render() {
+        // MUST FIX !this.props.player.eliminated -- What was I thinking this is for?
         if (this.props.gameTime === 'Day' && !this.props.player.eliminated) {
             return (
                 <div className="actions">

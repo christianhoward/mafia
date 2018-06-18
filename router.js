@@ -127,4 +127,11 @@ module.exports = function(app) {
         res.send(`${req.body.username} eliminated`);
     });
 
+    app.post('/set-roles', (req, res) => {
+        pusher.trigger(`presence-${req.session.room}`, 'set_roles', {
+            randomizer: Math.random()
+        });
+        res.send(`randomizer sent`);
+    });
+
 }

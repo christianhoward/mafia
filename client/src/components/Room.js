@@ -19,7 +19,6 @@ class Room extends Component {
             chats: [],
             mafiaChats: [{ message: "This is the Mafia Only chat. During the Night phase of the game, you can use this chat window to talk to the other members of the Mafia to determine who you want to eliminate.", username: "Admin", timeStamp: new Date().toLocaleDateString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ],
             players: [],
-            roles: ['Mafia', 'Doctor', 'Villager', 'Mafia', 'Villager', 'Detective', 'Villager'],
             count: 0,
             // loading: true,
             chatLocked: false,
@@ -56,7 +55,7 @@ class Room extends Component {
                     vote: '',
                     voted: false,
                     eliminated: false,
-                    role: this.state.roles[Object.keys(members.members).indexOf(member)]
+                    role: ''
                 });
             });
             this.updatePlayerList(players);
@@ -77,6 +76,23 @@ class Room extends Component {
         // Logic for updating the player's list when new players join.
         channel.bind('update_player_list', data => {
             this.setState({ players: data.players, count: data.players.length });
+        });
+        channel.bind('set_roles', data => {
+            let newState = this.state.players;
+            let extras = [];
+            let roles = ['Mafia', 'Mafia', 'Doctor', 'Detective', 'Villager'];
+            if (roles.length !== newState.length) {
+                for (let i=0; i < newState.length-roles.length; i++) {
+                    extras.push('Villager');
+                };
+                roles.push(...extras);
+            }
+            newState.forEach(player => {
+                let i = Math.floor(data.randomizer * roles.length);
+                player.role = roles[i];
+                roles.splice(i, 1);
+            });
+            this.setState({ players: newState });
         });
         channel.bind('public_vote', data => {
             let newState = this.state.players;

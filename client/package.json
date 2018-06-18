@@ -18,7 +18,7 @@
     "/public-vote": {
       "target": "http://localhost:5000"
     },
-    "/assign-roles": {
+    "/set-roles": {
       "target": "http://localhost:5000"
     },
     "/set-timer": {
